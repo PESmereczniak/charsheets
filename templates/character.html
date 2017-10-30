@@ -1,4 +1,5 @@
-<!doctype html>
+{% extends "base.html" %}
+{% block content %}
 <html>
     <head>
         <title>{{title}}</title>
@@ -17,65 +18,40 @@
             <li class="{{category}}">{{message}}</li>
         {% endfor %}
         </ul>
-    {% endwith %}
+    {% endwith %}    -->
 
-    {% block content %}
-    {% endblock %}    -->
+<form action = '/updateCharacter' name = 'Character.name'>
+  <h4><p name = 'name'>Name: {{thisCharacter.name}}</p>
+  <p name = 'race'>Race: {{thisCharacter.race}}</p>
+  <p name = 'charclass'>Class: {{thisCharacter.charclass}}</p>
+  <p name = 'level'>Level: {{thisCharacter.startlevel}}</p>
+  <p name = 'background'>Background: {{thisCharacter.background}}</p>
+  <p name = 'alignment'>Alignment: {{thisCharacter.alignment}}</p>
+  <p name = 'exp'>Experience Points: {{thisCharacter.exp}}</p>
+  <p name = 'proficiency'>Proficiency Bonus: {{thisCharacter.proficiency}}</p>
+  <p name = 'strength'>Strength: {{thisCharacter.strength}}</p>
+  <p name = 'dexterity'>Dexterity: {{thisCharacter.dexterity}}</p>
+  <p name = 'constitution'>Constitution: {{thisCharacter.constitution}}</p>
+  <p name = 'intelligence'>Intelligence: {{thisCharacter.intelligence}}</p>
+  <p name = 'wisdom'>Wisdom: {{thisCharacter.wisdom}}</p>
+  <p name = 'charisma'>Charisma: {{thisCharacter.charisma}}</p>
 
-<table style="width:100%">
-  <tr>
-    <th>Character Name: <input type="text"></th>
-    <th>Race: <input type="text"></th> 
-    <th>Class: <input type="text"></th>
-    <th>XP: [xp displayed]</th>
-    <th>Level: [level displayed]</th>
-    <th>Player: [Player Name displayed]</th>
-  </tr>
-  <tr>
-    <td>
-      <ul>
-        <h4>Ability Scores:</h4>
-        <li>Strength: <input type="text"></li>
-        <li>Dexterity: <input type="text"></li>
-        <li>Constitution: <input type="text"></li>
-        <li>Intelligence: <input type="text"></li>
-        <li>Wisdom: <input type="text"></li>
-        <li>Charisma: <input type="text"></li>
-      </ul>
-    </td>
-    <th>Race</th> 
-    <th>Class</th>
-    <th>XP</th>
-    <th>Leve</th>
-    <th>Player</th>
-  </tr>
-  <tr>
-    <td>Jill</td>
-    <td>Smith</td> 
-    <td>50</td>
-  </tr>
-  <tr>
-    <td>Eve</td>
-    <td>Jackson</td> 
-    <td>94</td>
-  </tr>
-</table>
-<table style="width:100%">
-  <tr>
-    <th>Firstname</th>
-    <th>Lastname</th> 
-    <th>Age</th>
-  </tr>
-  <tr>
-    <td>Jill</td>
-    <td>Smith</td> 
-    <td>50</td>
-  </tr>
-  <tr>
-    <td>Eve</td>
-    <td>Jackson</td> 
-    <td>94</td>
-  </tr>
-</table>
+  <p name = 'meleeAttackMod'>Melee Attack Modifier: XX</p>
+  <p name = 'rangedAttackMod'>Ranged Attack Modifier: XX</p>
+  <p name = 'spellAttackMod'>Spell Attack Modifier: XX</p>
+  <p name = 'savedc'>Save DC: XX</p>
+  <p name = 'ac'>Armor Class: XX</p></h4>
+  <input type="submit" value="End of Episode">
+  </form>
+  <div name = 'Ability Modifiers'>
+    <p>strmod {{strmod}}</p>
+    <p>dexmod {{dexmod}}</p>
+    <p>conmod {{conmod}}</p>
+    <p>intmod {{intmod}}</p>
+    <p>wismod {{wismod}}</p>
+    <p>chamod {{chamod}}</p>
+    <p>ac {{ac}}</p>
+  </div>
 </body>
 </html>
+{% endblock %}

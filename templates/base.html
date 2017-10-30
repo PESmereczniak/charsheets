@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>{{title}}</title>
+    <div id='links' style='position:static'>
+        <a class="navlink" href='/'>Home</a>
+        <a class="navlink" href='/userCharacters'>My Characters</a>
+        <!--<a class="navlink" href='/blog'>Read Blog</a>-->
+        <a class="navlink" href='/createNewChar'>New Character</a>
+        <a class="navlink" href='/login'>Login</a>
+        <a class="navlink" href='/register'>Register</a>
+        <a class="navlink" href='/logout'>Log Out</a>
+      </div>
+  </head>
+  <body>
+    <h1>{{title}}</h1>
+    {% block content %}
+      
+    {% endblock %}
+  </body>
+
+</html>

@@ -1,4 +1,5 @@
-<!doctype html>
+{% extends "base.html" %}
+{% block content %}
 <html>
     <head>
         <title>{{title}}</title>
@@ -8,57 +9,39 @@
             }
         </style>
     </head>
-
     <body>
-      <form action="newCharacter">
+      <form action="/newCharacter" method="POST">
         <h2>Create New D&D Character</h2>
         <p>Name: <input type="text" name="charName" id="1"></p>
         <p>Race: <select name="charRace" id="2"> 
-          <option value="dwarf">Dwarf</option>
-          <option value="elf">Elf</option>
-          <option value="alfling">Halfling</option>
-          <option value="human">Human</option>
-          <option value="dragonborn">Dragonborn</option>
-          <option value="gnome">Gnome</option>
-          <option value="halfelf">Half-Elf</option>
-          <option value="halforc">Half-Orc</option>
-          <option value="tiefling">Tiefling</option>
+          <option value="Dwarf">Dwarf</option>
+          <option value="Elf">Elf</option>
+          <option value="Halfling">Halfling</option>
+          <option value="Human">Human</option>
+          <option value="Dragonborn">Dragonborn</option>
+          <option value="Gnome">Gnome</option>
+          <option value="Half-Elf">Half-Elf</option>
+          <option value="Half-Orc">Half-Orc</option>
+          <option value="Tiefling">Tiefling</option>
         </select>
           Class: <select name="charClass" id="3">
-              <option value="barbarian">Barbarian</option>
-              <option value="bard">Bard</option>
-              <option value="cleric">Cleric</option>
-              <option value="druid">Druid</option>
-              <option value="fighter">Fighter</option>
-              <option value="monk">Monk</option>
-              <option value="paladin">Paladin</option>
-              <option value="ranger">Ranger</option>
-              <option value="rogue">Rogue</option>
-              <option value="sorcerer">Sorcerer</option>
-              <option value="warlock">Warlock</option>
-              <option value="wizard">Wizard</option>
+              <option value="Barbarian">Barbarian</option>
+              <option value="Bard">Bard</option>
+              <option value="Cleric">Cleric</option>
+              <option value="Druid">Druid</option>
+              <option value="Fighter">Fighter</option>
+              <option value="Monk">Monk</option>
+              <option value="Paladin">Paladin</option>
+              <option value="Ranger">Ranger</option>
+              <option value="Rogue">Rogue</option>
+              <option value="Sorcerer">Sorcerer</option>
+              <option value="Warlock">Warlock</option>
+              <option value="Wizard">Wizard</option>
             </select>
           Starting Level: <select name="startLevel" id="4">
-              <option value="1">1</option>
-              <option value="2">2</option>
-              <option value="3">3</option>
-              <option value="4">4</option>
-              <option value="5">5</option>
-              <option value="6">6</option>
-              <option value="7">7</option>
-              <option value="8">8</option>
-              <option value="9">9</option>
-              <option value="10">10</option>
-              <option value="11">11</option>
-              <option value="12">12</option>
-              <option value="13">13</option>
-              <option value="14">14</option>
-              <option value="15">15</option>
-              <option value="16">16</option>
-              <option value="17">17</option>
-              <option value="18">18</option>
-              <option value="19">19</option>
-              <option value="20">20</option>
+            {% for i in range(1,21) %}
+              <option value={{i}}>{{i}}</option>
+            {% endfor %}
           </select></p>
         <p>Background: <select name="background" id="5">
             <option value="acolyte">Acolyte</option>
@@ -89,130 +72,37 @@
         <h3>Ability Scores</h3>
         <ol>
           <li>Strength: <select name="strength" id="7">
-              <option value="1">1</option>
-              <option value="2">2</option>
-              <option value="3">3</option>
-              <option value="4">4</option>
-              <option value="5">5</option>
-              <option value="6">6</option>
-              <option value="7">7</option>
-              <option value="8">8</option>
-              <option value="9">9</option>
-              <option value="10">10</option>
-              <option value="11">11</option>
-              <option value="12">12</option>
-              <option value="13">13</option>
-              <option value="14">14</option>
-              <option value="15">15</option>
-              <option value="16">16</option>
-              <option value="17">17</option>
-              <option value="18">18</option>
+            {% for i in range(1,19) %}
+              <option value={{i}}>{{i}}</option>
+            {% endfor %}
           </select></li>
           <li>Dexterity: <select name="dexterity" id="8">
-              <option value="1">1</option>
-              <option value="2">2</option>
-              <option value="3">3</option>
-              <option value="4">4</option>
-              <option value="5">5</option>
-              <option value="6">6</option>
-              <option value="7">7</option>
-              <option value="8">8</option>
-              <option value="9">9</option>
-              <option value="10">10</option>
-              <option value="11">11</option>
-              <option value="12">12</option>
-              <option value="13">13</option>
-              <option value="14">14</option>
-              <option value="15">15</option>
-              <option value="16">16</option>
-              <option value="17">17</option>
-              <option value="18">18</option>
+            {% for i in range(1,19) %}
+              <option value={{i}}>{{i}}</option>
+            {% endfor %}
           </select></li>
           <li>Constitution: <select name="constitution" id="9">
-              <option value="1">1</option>
-              <option value="2">2</option>
-              <option value="3">3</option>
-              <option value="4">4</option>
-              <option value="5">5</option>
-              <option value="6">6</option>
-              <option value="7">7</option>
-              <option value="8">8</option>
-              <option value="9">9</option>
-              <option value="10">10</option>
-              <option value="11">11</option>
-              <option value="12">12</option>
-              <option value="13">13</option>
-              <option value="14">14</option>
-              <option value="15">15</option>
-              <option value="16">16</option>
-              <option value="17">17</option>
-              <option value="18">18</option>
+            {% for i in range(1,19) %}
+              <option value={{i}}>{{i}}</option>
+            {% endfor %}
           </select></li>
           <li>Intelligence: <select name="intelligence" id="10">
-              <option value="1">1</option>
-              <option value="2">2</option>
-              <option value="3">3</option>
-              <option value="4">4</option>
-              <option value="5">5</option>
-              <option value="6">6</option>
-              <option value="7">7</option>
-              <option value="8">8</option>
-              <option value="9">9</option>
-              <option value="10">10</option>
-              <option value="11">11</option>
-              <option value="12">12</option>
-              <option value="13">13</option>
-              <option value="14">14</option>
-              <option value="15">15</option>
-              <option value="16">16</option>
-              <option value="17">17</option>
-              <option value="18">18</option>
+            {% for i in range(1,19) %}
+              <option value={{i}}>{{i}}</option>
+            {% endfor %}
           </select></li>
           <li>Wisdom: <select name="wisdom" id="11">
-              <option value="1">1</option>
-              <option value="2">2</option>
-              <option value="3">3</option>
-              <option value="4">4</option>
-              <option value="5">5</option>
-              <option value="6">6</option>
-              <option value="7">7</option>
-              <option value="8">8</option>
-              <option value="9">9</option>
-              <option value="10">10</option>
-              <option value="11">11</option>
-              <option value="12">12</option>
-              <option value="13">13</option>
-              <option value="14">14</option>
-              <option value="15">15</option>
-              <option value="16">16</option>
-              <option value="17">17</option>
-              <option value="18">18</option>
+            {% for i in range(1,19) %}
+              <option value={{i}}>{{i}}</option>
+            {% endfor %}
           </select></li>
           <li>Charisma: <select name="charisma" id="12">
-              <option value="1">1</option>
-              <option value="2">2</option>
-              <option value="3">3</option>
-              <option value="4">4</option>
-              <option value="5">5</option>
-              <option value="6">6</option>
-              <option value="7">7</option>
-              <option value="8">8</option>
-              <option value="9">9</option>
-              <option value="10">10</option>
-              <option value="11">11</option>
-              <option value="12">12</option>
-              <option value="13">13</option>
-              <option value="14">14</option>
-              <option value="15">15</option>
-              <option value="16">16</option>
-              <option value="17">17</option>
-              <option value="18">18</option>
+            {% for i in range(1,19) %}
+              <option value={{i}}>{{i}}</option>
+            {% endfor %}
           </select></li>
         </ol>
-
-        <input type="submit">
+        <input type="submit" value="Next">
       </form>
     </body>
-
-
-<body>
+{% endblock %}

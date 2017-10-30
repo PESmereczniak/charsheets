@@ -5,48 +5,259 @@ from datetime import datetime
 
 app = Flask(__name__)
 app.config['DEBUG'] = True
-#NEEDS CORRECT ADDRESS AND NEW DB!!!
-#app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://build-a-blog:rehcr1943@localhost:8889/build-a-blog'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://dndchar:Fr@nkl1n@localhost:8889/dndchar'
 app.config['SQLALCHEMY_ECHO'] = True
 db = SQLAlchemy(app)
-app.secret_key = '123456abcdef'
+app.secret_key = '11a2b3000destruct'
 
-class char_abilityScores(db.Model):
+#CREATES CHARACTER CLASSES IN DB
+class Character(db.Model):
     
     id = db.Column(db.Integer, primary_key=True)
-    strength = db.Column(db.Integer(2))
-    dexterity = db.Column(db.Integer(2))
-    constitution = db.Column(db.Integer(2))
-    intelligence = db.Column(db.Integer(2))
-    wisdom = db.Column(db.Integer(2))
-    charisma = db.Column(db.Integer(2))
+    #Modifiers, character info
+    name = db.Column(db.String(20))
+    race = db.Column(db.String(20))
+    charclass = db.Column(db.String(20))
+    startlevel = db.Column(db.Integer)
+    background = db.Column(db.String(20))
+    alignment = db.Column(db.String(20))
+    #Experience Points
+    exp = db.Column(db.Integer)
+    #Proficiency Bonus
+    proficiency = db.Column(db.Integer)
+    #Ability Scores
+    strength = db.Column(db.Integer)
+    dexterity = db.Column(db.Integer)
+    constitution = db.Column(db.Integer)
+    intelligence = db.Column(db.Integer)
+    wisdom = db.Column(db.Integer)
+    charisma = db.Column(db.Integer)
 
     #MUST DEFINE RELATIONSHIPS WITH OTHER TABLES
+    owner_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     user = db.relationship('User')
+
+    def __init__(self, name, race, charclass, startlevel, background, alignment, exp, proficiency, strength, dexterity, constitution, intelligence, wisdom, charisma, owner):
+        self.name = name
+        self.race = race
+        self.charclass = charclass
+        self.startlevel = startlevel
+        self.background = background
+        self.alignment = alignment
+        self.exp = exp
+        self.proficiency = proficiency
+        self.strength = strength
+        self.dexterity = dexterity
+        self.constitution = constitution
+        self.intelligence = intelligence
+        self.wisdom = wisdom
+        self.charisma = charisma
+        self.owner = owner
+
+
+#class Item(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+
 
     # def __init__(self, blog_title, blog_text, owner):
     #     self.blog_title = blog_title
     #     self.blog_text = blog_text
     #     self.owner = owner
 
-class char_race(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-
-class char_class(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-
-class char_background(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-
-class char_data(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-
+#CREATES USERS CLASSES IN DB
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(40), unique=True)
     password = db.Column(db.String(20))
-    blogs = db.relationship('Blog', backref='owner')
+    characters = db.relationship('Character', backref='owner')
 
-    # def __init__(self, email, password):
-    #     self.email = email
-    #     self.password = password
+    def __init__(self, email, password):
+        self.email = email
+        self.password = password
+
+#REQUIRES LOGIN BEFORE ALLOWING ACCESS
+@app.before_request
+def require_login():
+  allowed_routs = ['login', 'register']
+  if request.endpoint not in allowed_routs and 'email' not in session:
+    return redirect('/login')
+
+#ALLOWS EXISTING USERS TO LOG IN
+@app.route('/login', methods=['POST', 'GET'])
+def login():
+    if request.method == 'POST':
+        email = request.form['email']
+        password = request.form['password']
+        user = User.query.filter_by(email=email).first()
+        if user and user.password == password:
+            session['email'] = email
+            flash("Logged In")
+            return redirect('/')
+        else:
+            flash('User password incorrect, or user does not exist', 'error')
+
+    return render_template('login.html', title="Account Login")
+
+#ALLOWS NEW USERS TO REGISTER
+@app.route('/register', methods=['POST', 'GET'])
+def register():
+    if request.method == 'POST':
+        email = request.form['email']
+        password = request.form['password']
+        verify = request.form['verify']
+
+        if len(password) <= 2 or len(password) >= 21 or ' ' in password:
+            flash('Password must be at least three (3) characters long and CANNOT contain spaces.', 'error')
+            return render_template('register.html', email=email)
+
+        if password != verify:
+            flash('Passwords MUST match.  Please re-enter.', 'error')
+            return render_template('register.html', email=email)
+
+        existing_user = User.query.filter_by(email=email).first()
+
+        if not existing_user:
+            new_user = User(email, password)
+            db.session.add(new_user)
+            db.session.commit()
+            session['email'] = email
+            return redirect('/login')
+        else:
+            flash('User name already exists', 'error')
+            return redirect('/login')
+
+    return render_template('register.html', title="Register New Account")
+
+#LINKS TO HOME PAGE - CURRENTLY THE SAME AS USERCHARACTERS; NEEDS SOMETHING ELSE
+@app.route('/', methods=['POST', 'GET'])
+def index():
+    owner = User.query.filter_by(email=session['email']).first()
+    characters = Character.query.filter_by(owner=owner).all()
+    return render_template('characters.html', title='Manage Your Characters', characters=characters, owner=owner)
+
+#LINKS TO CREATE NEW USER FORM
+@app.route('/createNewChar', methods=['POST', 'GET'])
+def createForm():
+    return render_template('create.html', title="Create New Character")
+
+#CREATES NEW USER UPON SUBMISSION - NEEDS MORE INFORMATION TO FULLY CREATE CHARACTER, BUT CURRENTLY IS FUNCTIONING
+@app.route('/newCharacter', methods=['POST', 'GET'])
+def createNew():
+    name = request.form['charName']
+    race = request.form['charRace']
+    charclass = request.form['charClass']
+    startlevel = int(request.form['startLevel'])
+    background = request.form['background']
+    alignment = request.form['alignment']
+    exp = 0
+#SETS STARTING EXPERIENCE POINTS, BASED ON STARTING LEVEL
+    if startlevel == 1:
+        exp = 0
+    if startlevel == 2:
+        exp = 300
+    if startlevel == 3:
+        exp = 900
+    if startlevel == 4:
+        exp = 2700
+    if startlevel == 5:
+        exp = 6500
+    if startlevel == 6:
+        exp = 14000
+    if startlevel == 7:
+        exp = 23000
+    if startlevel == 8:
+        exp = 34000
+    if startlevel == 9:
+        exp = 48000
+    if startlevel == 10:
+        exp = 64000
+    if startlevel == 11:
+        exp = 85000
+    if startlevel == 12:
+        exp = 100000
+    if startlevel == 13:
+        exp = 120000
+    if startlevel == 14:
+        exp = 140000
+    if startlevel == 15:
+        exp = 165000
+    if startlevel == 16:
+        exp = 195000
+    if startlevel == 17:
+        exp = 225000
+    if startlevel == 18:
+        exp = 265000
+    if startlevel == 19:
+        exp = 305000
+    if startlevel == 20:
+        exp == 355000
+#PROFICIENCY
+    proficiency = 0
+#SET PROFICIENCY BONUS BASED ON CHARACTER LEVEL
+    if startlevel <= 4:
+        proficiency = 2
+    if startlevel >= 5 and startlevel <= 8:
+        proficiency = 3
+    if startlevel >= 9 and startlevel <= 12:
+        proficiency = 4
+    if startlevel >= 13 and startlevel <= 16:
+        proficiency = 5
+    if startlevel >= 17:
+        proficiency = 6
+
+#ABILITY SCORES MODIFIERS
+    strength = request.form['strength']
+    dexterity = request.form['dexterity']
+    constitution = request.form['constitution']
+    intelligence = request.form['intelligence']
+    wisdom = request.form['wisdom']
+    charisma = request.form['charisma']
+
+#SUBMITS CHARACTER STATS TO DB
+    owner = User.query.filter_by(email=session['email']).first()
+    if request.method == 'POST':
+        newChar = Character(name, race, charclass, startlevel, background, alignment, exp, proficiency, strength, dexterity, constitution, intelligence, wisdom, charisma, owner)
+        db.session.add(newChar)
+        db.session.commit()
+        thisChar = str(newChar.id)
+        return redirect('./characterSheet?id='+thisChar)
+
+#PRODUCES CHARACTER SHEET PAGE - PAGE NEEDS ALL INFORMATION AND FORMATTING IN HTML
+@app.route('/characterSheet', methods=['POST', 'GET'])
+def charSheet():
+    character_id = request.args.get('id')
+    thisCharacter = Character.query.get(character_id)
+
+    #ABILITY SCORE MODIFIERS
+    strmod = int(((int(thisCharacter.strength)-10)/2) - (int(thisCharacter.strength)-10)%2)
+    dexmod = int(((int(thisCharacter.dexterity)-10)/2) - (int(thisCharacter.dexterity)-10)%2)
+    conmod = int(((int(thisCharacter.constitution)-10)/2) - (int(thisCharacter.constitution)-10)%2)
+    intmod = int(((int(thisCharacter.intelligence)-10)/2) - (int(thisCharacter.intelligence)-10)%2)
+    wismod = int(((int(thisCharacter.wisdom)-10)/2) - (int(thisCharacter.wisdom)-10)%2)
+    chamod = int(((int(thisCharacter.charisma)-10)/2) - (int(thisCharacter.charisma)-10)%2)
+
+    #SAVE DC CALCULATION
+    savedc = 0
+    #AC CALCULATION
+    ac = 10 + dexmod
+    #ATTACK BONUS CALCULATIONS FOR PRIMARY ATTACK METHOD
+    meleeAttackMod = 0
+    rangedAttackMod = 0
+    spellAttackMod = 0
+    return render_template('character.html', title=thisCharacter.name, thisCharacter=thisCharacter, strmod=strmod, dexmod=dexmod, conmod=conmod, intmod=intmod, wismod=wismod, chamod=chamod, ac=ac)#, savedc=savedc, ac=ac, meleeAttackMod=meleeAttackMod, rangedAttackMod=rangedAttackMod, spellAttackMod=spellAttackMod)
+
+#RENDERS PAGE OF CHARACTERS CREATED BY CURRENT USER
+@app.route('/userCharacters', methods=['POST', 'GET'])
+def characters():
+    owner = User.query.filter_by(email=session['email']).first()
+    characters = Character.query.filter_by(owner=owner).all()
+    return render_template('characters.html', characters=characters, owner=owner, title=owner.email)
+
+#LOGS OUT CURRENT LOGGED-IN USER
+@app.route('/logout')
+def logout():
+    del session['email']
+    return redirect('/')
+
+if __name__ == '__main__':
+    app.run()

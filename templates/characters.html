@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h2>{{owner.email}}'s Characters</h2>
+  {% for character in characters %}
+  <div class="charlist" name="{{character.name}}" id="{{character.id}}">
+      <h4><a href="./characterSheet?id={{character.id}}">{{character.name}}</a></h4></br>
+    </div>
+  {% endfor %}
+{% endblock %}
