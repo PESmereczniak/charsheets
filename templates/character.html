@@ -24,34 +24,65 @@
   <h4><p name = 'name'>Name: {{thisCharacter.name}}</p>
   <p name = 'race'>Race: {{thisCharacter.race}}</p>
   <p name = 'charclass'>Class: {{thisCharacter.charclass}}</p>
-  <p name = 'level'>Level: {{thisCharacter.startlevel}}</p>
+  <p name = 'level'>Level: {{thisCharacter.level}}</p>
   <p name = 'background'>Background: {{thisCharacter.background}}</p>
   <p name = 'alignment'>Alignment: {{thisCharacter.alignment}}</p>
   <p name = 'exp'>Experience Points: {{thisCharacter.exp}}</p>
+  <p name = 'hp'>Max HP: {{thisCharacter.hp}}</p>
+
   <p name = 'proficiency'>Proficiency Bonus: {{thisCharacter.proficiency}}</p>
+  <p>Armor Class: {{ac}}</p>
   <p name = 'strength'>Strength: {{thisCharacter.strength}}</p>
+  <p>Modifier: {{strmod}}</p>
   <p name = 'dexterity'>Dexterity: {{thisCharacter.dexterity}}</p>
+  <p>Modifier: {{dexmod}}</p>
   <p name = 'constitution'>Constitution: {{thisCharacter.constitution}}</p>
+  <p>Modifier: {{conmod}}</p>
   <p name = 'intelligence'>Intelligence: {{thisCharacter.intelligence}}</p>
+  <p>Modifier: {{intmod}}</p>
   <p name = 'wisdom'>Wisdom: {{thisCharacter.wisdom}}</p>
+  <p>Modifier: {{wismod}}</p>
   <p name = 'charisma'>Charisma: {{thisCharacter.charisma}}</p>
+  <p>Modifier: {{chamod}}</p></h4>
+
+  <h3>Saving Throws</h3>
+  <p>Strength: {{strmod}}</p>
+  <p>Dexterity: {{dexmod}}</p>
+  <p>Constitution: {{conmod}}</p>
+  <p>Intelligence: {{intmod}}</p>
+  <p>Wisdom: {{wismod}}</p>
+  <p>Charisma: {{chamod}}</p>
+
+  <h3>Skills</h3>
+  <p>Acrobatics: {{dexmod}}</p>
+  <p>Animal Handling: {{wismod}}</p>
+  <p>Arcana: {{intmod}}</p>
+  <p>Athletics: {{strmod}}</p>
+  <p>Deception: {{chamod}}</p>
+  <p>History: {{intmod}}</p>
+  <p>Insight: {{wismod}}</p>
+  <p>Intimidation: {{chamod}}</p>
+  <p>Investigation: {{intmod}}</p>
+  <p>Medicine: {{wismod}}</p>
+  <p>Nature: {{intmod}}</p>
+  <p>Perception: {{wismod}}</p>
+  <p>Performance: {{chamod}}</p>
+  <p>Persuasion: {{chamod}}</p>
+  <p>Religion: {{intmod}}</p>
+  <p>Slight of Hand: {{dexmod}}</p>
+  <p>Stealth: {{dexmod}}</p>
+  <p>Survival: {{wismod}}</p>
 
   <p name = 'meleeAttackMod'>Melee Attack Modifier: XX</p>
   <p name = 'rangedAttackMod'>Ranged Attack Modifier: XX</p>
   <p name = 'spellAttackMod'>Spell Attack Modifier: XX</p>
   <p name = 'savedc'>Save DC: XX</p>
-  <p name = 'ac'>Armor Class: XX</p></h4>
+  <p name = 'ac'>Armor Class: XX</p>
+
+  <p name = 'money'>Money: XX</p>
+  <p name = 'inventory'>Inventory: XX</p>
   <input type="submit" value="End of Episode">
   </form>
-  <div name = 'Ability Modifiers'>
-    <p>strmod {{strmod}}</p>
-    <p>dexmod {{dexmod}}</p>
-    <p>conmod {{conmod}}</p>
-    <p>intmod {{intmod}}</p>
-    <p>wismod {{wismod}}</p>
-    <p>chamod {{chamod}}</p>
-    <p>ac {{ac}}</p>
-  </div>
 </body>
 </html>
 {% endblock %}

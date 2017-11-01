@@ -18,11 +18,13 @@ class Character(db.Model):
     name = db.Column(db.String(20))
     race = db.Column(db.String(20))
     charclass = db.Column(db.String(20))
-    startlevel = db.Column(db.Integer)
+    level = db.Column(db.Integer)
     background = db.Column(db.String(20))
     alignment = db.Column(db.String(20))
     #Experience Points
     exp = db.Column(db.Integer)
+    #Hit Points
+    hp = db.Column(db.Integer)
     #Proficiency Bonus
     proficiency = db.Column(db.Integer)
     #Ability Scores
@@ -36,15 +38,17 @@ class Character(db.Model):
     #MUST DEFINE RELATIONSHIPS WITH OTHER TABLES
     owner_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     user = db.relationship('User')
+#    items = db.relationship('Item')
 
-    def __init__(self, name, race, charclass, startlevel, background, alignment, exp, proficiency, strength, dexterity, constitution, intelligence, wisdom, charisma, owner):
+    def __init__(self, name, race, charclass, level, background, alignment, exp, hp, proficiency, strength, dexterity, constitution, intelligence, wisdom, charisma, owner):
         self.name = name
         self.race = race
         self.charclass = charclass
-        self.startlevel = startlevel
+        self.level = level
         self.background = background
         self.alignment = alignment
         self.exp = exp
+        self.hp = hp
         self.proficiency = proficiency
         self.strength = strength
         self.dexterity = dexterity
@@ -57,9 +61,9 @@ class Character(db.Model):
 
 #class Item(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-
-
-    # def __init__(self, blog_title, blog_text, owner):
+#    character = db.relationship('Character')
+#    owner = db.Column(db.String, db.ForeignKey(character.id))
+    # def __init__(self, owner):
     #     self.blog_title = blog_title
     #     self.blog_text = blog_text
     #     self.owner = owner
@@ -146,81 +150,157 @@ def createNew():
     name = request.form['charName']
     race = request.form['charRace']
     charclass = request.form['charClass']
-    startlevel = int(request.form['startLevel'])
+    level = int(request.form['level'])
     background = request.form['background']
     alignment = request.form['alignment']
     exp = 0
-#SETS STARTING EXPERIENCE POINTS, BASED ON STARTING LEVEL
-    if startlevel == 1:
+    hp = 0
+#SET STARTING EXPERIENCE POINTS, BASED ON STARTING LEVEL
+    if level == 1:
         exp = 0
-    if startlevel == 2:
+    if level == 2:
         exp = 300
-    if startlevel == 3:
+    if level == 3:
         exp = 900
-    if startlevel == 4:
+    if level == 4:
         exp = 2700
-    if startlevel == 5:
+    if level == 5:
         exp = 6500
-    if startlevel == 6:
+    if level == 6:
         exp = 14000
-    if startlevel == 7:
+    if level == 7:
         exp = 23000
-    if startlevel == 8:
+    if level == 8:
         exp = 34000
-    if startlevel == 9:
+    if level == 9:
         exp = 48000
-    if startlevel == 10:
+    if level == 10:
         exp = 64000
-    if startlevel == 11:
+    if level == 11:
         exp = 85000
-    if startlevel == 12:
+    if level == 12:
         exp = 100000
-    if startlevel == 13:
+    if level == 13:
         exp = 120000
-    if startlevel == 14:
+    if level == 14:
         exp = 140000
-    if startlevel == 15:
+    if level == 15:
         exp = 165000
-    if startlevel == 16:
+    if level == 16:
         exp = 195000
-    if startlevel == 17:
+    if level == 17:
         exp = 225000
-    if startlevel == 18:
+    if level == 18:
         exp = 265000
-    if startlevel == 19:
+    if level == 19:
         exp = 305000
-    if startlevel == 20:
+    if level == 20:
         exp == 355000
 #PROFICIENCY
-    proficiency = 0
+
 #SET PROFICIENCY BONUS BASED ON CHARACTER LEVEL
-    if startlevel <= 4:
+    if level <= 4:
         proficiency = 2
-    if startlevel >= 5 and startlevel <= 8:
+    if level >= 5 and level <= 8:
         proficiency = 3
-    if startlevel >= 9 and startlevel <= 12:
+    if level >= 9 and level <= 12:
         proficiency = 4
-    if startlevel >= 13 and startlevel <= 16:
+    if level >= 13 and level <= 16:
         proficiency = 5
-    if startlevel >= 17:
+    if level >= 17:
         proficiency = 6
 
+#SET RACIAL ABILITY SCORE MODIFIERS
+    if request.form['race'] == 'Dwarf':
+        strbns = 0
+        dexbns = 0
+        conbns = 2
+        intbns = 0
+        wisbns = 1
+        chabns = 0
+
+    if request.form['race'] == 'Elf':
+        strbns = 0
+        dexbns = 2
+        conbns = 0
+        intbns = 1
+        wisbns = 1
+        chabns = 0
+
+    if request.form['race'] == 'Halfling':
+        strbns = 0
+        dexbns = 2
+        conbns = 0
+        intbns = 0
+        wisbns = 0
+        chabns = 0
+
+    if request.form['race'] == 'Human':
+        strbns = 1
+        dexbns = 1
+        conbns = 1
+        intbns = 1
+        wisbns = 1
+        chabns = 1
+
+    if request.form['race'] == 'Dragonborn':
+        strbns = 2
+        dexbns = 0
+        conbns = 0
+        intbns = 0
+        wisbns = 0
+        chabns = 1
+
+    if request.form['race'] == 'Gnome':
+        strbns = 0
+        dexbns = 0
+        conbns = 0
+        intbns = 2
+        wisbns = 0
+        chabns = 0
+
+    if request.form['race'] == 'Half-Elf':
+        strbns = 0
+        dexbns = 0
+        conbns = 0
+        intbns = 1
+        wisbns = 0
+        chabns = 2
+
+    if request.form['race'] == 'Half-Orc':
+        strbns = 2
+        dexbns = 0
+        conbns = 1
+        intbns = 0
+        wisbns = 0
+        chabns = 0
+
+    if request.form['race'] == 'Tiefling':
+        strbns = 0
+        dexbns = 0
+        conbns = 0
+        intbns = 1
+        wisbns = 0
+        chabns = 2
+
+#SET CLASS ABILITY MODIFIERS <-- NEXT <-- NEXT
+
 #ABILITY SCORES MODIFIERS
-    strength = request.form['strength']
-    dexterity = request.form['dexterity']
-    constitution = request.form['constitution']
-    intelligence = request.form['intelligence']
-    wisdom = request.form['wisdom']
-    charisma = request.form['charisma']
+    strength = request.form['strength'] + strbns
+    dexterity = request.form['dexterity'] + dexbns
+    constitution = request.form['constitution'] + conbns
+    intelligence = request.form['intelligence'] + intbns
+    wisdom = request.form['wisdom'] + wisbns
+    charisma = request.form['charisma'] + chabns
 
 #SUBMITS CHARACTER STATS TO DB
     owner = User.query.filter_by(email=session['email']).first()
     if request.method == 'POST':
-        newChar = Character(name, race, charclass, startlevel, background, alignment, exp, proficiency, strength, dexterity, constitution, intelligence, wisdom, charisma, owner)
+        newChar = Character(name, race, charclass, level, background, alignment, exp, hp, proficiency, strength, dexterity, constitution, intelligence, wisdom, charisma, owner)
         db.session.add(newChar)
         db.session.commit()
         thisChar = str(newChar.id)
-        return redirect('./characterSheet?id='+thisChar)
+        return render_template('./characterSheet?id='+thisChar, thisCharacter=newChar)
 
 #PRODUCES CHARACTER SHEET PAGE - PAGE NEEDS ALL INFORMATION AND FORMATTING IN HTML
 @app.route('/characterSheet', methods=['POST', 'GET'])
@@ -228,19 +308,44 @@ def charSheet():
     character_id = request.args.get('id')
     thisCharacter = Character.query.get(character_id)
 
-    #ABILITY SCORE MODIFIERS
-    strmod = int(((int(thisCharacter.strength)-10)/2) - (int(thisCharacter.strength)-10)%2)
-    dexmod = int(((int(thisCharacter.dexterity)-10)/2) - (int(thisCharacter.dexterity)-10)%2)
-    conmod = int(((int(thisCharacter.constitution)-10)/2) - (int(thisCharacter.constitution)-10)%2)
-    intmod = int(((int(thisCharacter.intelligence)-10)/2) - (int(thisCharacter.intelligence)-10)%2)
-    wismod = int(((int(thisCharacter.wisdom)-10)/2) - (int(thisCharacter.wisdom)-10)%2)
-    chamod = int(((int(thisCharacter.charisma)-10)/2) - (int(thisCharacter.charisma)-10)%2)
+#ABILITY SCORE MODIFIERS - DOES NOT CHANGE ABILITY SCORE; CALCULATES MODIFIERS BASED ON ABILITY SCORES
+    if int(thisCharacter.strength)%2==0:
+        strmod = int((int(thisCharacter.strength-10))/2)
+    else:
+        strmod = int((int(thisCharacter.strength-11))/2)
 
-    #SAVE DC CALCULATION
+    if int(thisCharacter.dexterity)%2==0:
+        dexmod = int((int(thisCharacter.dexterity-10))/2)
+    else:
+        dexmod = int((int(thisCharacter.dexterity-11))/2)
+
+    if int(thisCharacter.constitution)%2==0:
+        conmod = int((int(thisCharacter.constitution-10))/2)
+    else:
+        conmod = int((int(thisCharacter.constitution-11))/2)
+
+    if int(thisCharacter.intelligence)%2==0:
+        intmod = int((int(thisCharacter.intelligence-10))/2)
+    else:
+        intmod = int((int(thisCharacter.intelligence-11))/2)
+
+    if int(thisCharacter.wisdom)%2==0:
+        wismod = int((int(thisCharacter.wisdom-10))/2)
+    else:
+        wismod = int((int(thisCharacter.wisdom-11))/2)
+
+    if int(thisCharacter.charisma)%2==0:
+        chamod = int((int(thisCharacter.charisma-10))/2)
+    else:
+        chamod = int((int(thisCharacter.charisma-11))/2)
+
+#SAVE DC CALCULATION
     savedc = 0
-    #AC CALCULATION
+
+#AC CALCULATION
     ac = 10 + dexmod
-    #ATTACK BONUS CALCULATIONS FOR PRIMARY ATTACK METHOD
+
+#ATTACK BONUS CALCULATIONS FOR PRIMARY ATTACK METHOD
     meleeAttackMod = 0
     rangedAttackMod = 0
     spellAttackMod = 0
