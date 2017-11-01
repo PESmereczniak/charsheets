@@ -300,7 +300,7 @@ def createNew():
         db.session.add(newChar)
         db.session.commit()
         thisChar = str(newChar.id)
-        return render_template('./characterSheet?id='+thisChar, thisCharacter=newChar)
+        return redirect('./characterSheet?id='+thisChar, thisCharacter=newChar)
 
 #PRODUCES CHARACTER SHEET PAGE - PAGE NEEDS ALL INFORMATION AND FORMATTING IN HTML
 @app.route('/characterSheet', methods=['POST', 'GET'])
