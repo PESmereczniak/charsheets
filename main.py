@@ -207,16 +207,16 @@ def createNew():
     if level >= 17:
         proficiency = 6
 
-#SET RACIAL ABILITY SCORE MODIFIERS
-    if request.form['race'] == 'Dwarf':
-        strbns = 0
+#SET RACIAL ABILITY SCORE MODIFIERS <--THIS IS CAUSING ERRORS?
+    if race == 'Dwarf':
+        strbns = 4
         dexbns = 0
         conbns = 2
         intbns = 0
         wisbns = 1
         chabns = 0
 
-    if request.form['race'] == 'Elf':
+    if race == 'Elf':
         strbns = 0
         dexbns = 2
         conbns = 0
@@ -224,7 +224,7 @@ def createNew():
         wisbns = 1
         chabns = 0
 
-    if request.form['race'] == 'Halfling':
+    if race == 'Halfling':
         strbns = 0
         dexbns = 2
         conbns = 0
@@ -232,7 +232,7 @@ def createNew():
         wisbns = 0
         chabns = 0
 
-    if request.form['race'] == 'Human':
+    if race == 'Human':
         strbns = 1
         dexbns = 1
         conbns = 1
@@ -240,7 +240,7 @@ def createNew():
         wisbns = 1
         chabns = 1
 
-    if request.form['race'] == 'Dragonborn':
+    if race == 'Dragonborn':
         strbns = 2
         dexbns = 0
         conbns = 0
@@ -248,7 +248,7 @@ def createNew():
         wisbns = 0
         chabns = 1
 
-    if request.form['race'] == 'Gnome':
+    if race == 'Gnome':
         strbns = 0
         dexbns = 0
         conbns = 0
@@ -256,7 +256,7 @@ def createNew():
         wisbns = 0
         chabns = 0
 
-    if request.form['race'] == 'Half-Elf':
+    if race == 'Half-Elf':
         strbns = 0
         dexbns = 0
         conbns = 0
@@ -264,7 +264,7 @@ def createNew():
         wisbns = 0
         chabns = 2
 
-    if request.form['race'] == 'Half-Orc':
+    if race == 'Half-Orc':
         strbns = 2
         dexbns = 0
         conbns = 1
@@ -272,7 +272,7 @@ def createNew():
         wisbns = 0
         chabns = 0
 
-    if request.form['race'] == 'Tiefling':
+    if race == 'Tiefling':
         strbns = 0
         dexbns = 0
         conbns = 0
@@ -283,12 +283,18 @@ def createNew():
 #SET CLASS ABILITY MODIFIERS <-- NEXT <-- NEXT
 
 #ABILITY SCORES WITH MODIFIERS
-    strength = request.form['strength'] + int(strbns)
-    dexterity = request.form['dexterity'] + int(dexbns)
-    constitution = request.form['constitution'] + int(conbns)
-    intelligence = request.form['intelligence'] + int(intbns)
-    wisdom = request.form['wisdom'] + int(wisbns)
-    charisma = request.form['charisma'] + int(chabns)
+    strength = int(request.form['strength'])
+    strength = strength + strbns
+    dexterity = int(request.form['dexterity'])
+    dexterity = dexterity + dexbns
+    constitution = int(request.form['constitution'])
+    constitution = constitution + conbns
+    intelligence = int(request.form['intelligence'])
+    intelligence = intelligence + intbns
+    wisdom = int(request.form['wisdom'])
+    wisdom = wisdom + wisbns
+    charisma = int(request.form['charisma'])
+    charisma = charisma + chabns
 
 #SUBMITS CHARACTER STATS TO DB
     owner = User.query.filter_by(email=session['email']).first()
