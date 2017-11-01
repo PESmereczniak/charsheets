@@ -207,7 +207,7 @@ def createNew():
     if level >= 17:
         proficiency = 6
 
-#SET RACIAL ABILITY SCORE MODIFIERS <--THIS IS CAUSING ERRORS?
+#SET RACIAL ABILITY SCORE MODIFIERS <--FUNCTIONING; WILL NEED SPECIFICS FOR PARTICULAR SUBRACES (IE HILL DWARF AND HIGH ELF)
     if race == 'Dwarf':
         strbns = 4
         dexbns = 0
