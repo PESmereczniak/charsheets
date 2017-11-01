@@ -12,7 +12,6 @@ app.secret_key = '11a2b3000destruct'
 
 #CREATES CHARACTER CLASSES IN DB
 class Character(db.Model):
-    
     id = db.Column(db.Integer, primary_key=True)
     #Modifiers, character info
     name = db.Column(db.String(20))
@@ -60,7 +59,7 @@ class Character(db.Model):
 
 
 #class Item(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
+#    id = db.Column(db.Integer, primary_key=True)
 #    character = db.relationship('Character')
 #    owner = db.Column(db.String, db.ForeignKey(character.id))
     # def __init__(self, owner):
@@ -82,9 +81,9 @@ class User(db.Model):
 #REQUIRES LOGIN BEFORE ALLOWING ACCESS
 @app.before_request
 def require_login():
-  allowed_routs = ['login', 'register']
-  if request.endpoint not in allowed_routs and 'email' not in session:
-    return redirect('/login')
+    allowed_routs = ['login', 'register']
+    if request.endpoint not in allowed_routs and 'email' not in session:
+        return redirect('/login')
 
 #ALLOWS EXISTING USERS TO LOG IN
 @app.route('/login', methods=['POST', 'GET'])
@@ -153,7 +152,7 @@ def createNew():
     level = int(request.form['level'])
     background = request.form['background']
     alignment = request.form['alignment']
-    exp = 0
+#    exp = 0
     hp = 0
 #SET STARTING EXPERIENCE POINTS, BASED ON STARTING LEVEL
     if level == 1:
@@ -197,110 +196,111 @@ def createNew():
     if level == 20:
         exp == 355000
 #PROFICIENCY
-
+    proficiency = 0
 #SET PROFICIENCY BONUS BASED ON CHARACTER LEVEL
-    if level <= 4:
-        proficiency = 2
-    if level >= 5 and level <= 8:
-        proficiency = 3
-    if level >= 9 and level <= 12:
-        proficiency = 4
-    if level >= 13 and level <= 16:
-        proficiency = 5
-    if level >= 17:
-        proficiency = 6
+    # if level <= 4:
+    #     proficiency = 2
+    # if level >= 5 and level <= 8:
+    #     proficiency = 3
+    # if level >= 9 and level <= 12:
+    #     proficiency = 4
+    # if level >= 13 and level <= 16:
+    #     proficiency = 5
+    # if level >= 17:
+    #     proficiency = 6
 
 #SET RACIAL ABILITY SCORE MODIFIERS
-    if request.form['race'] == 'Dwarf':
-        strbns = 0
-        dexbns = 0
-        conbns = 2
-        intbns = 0
-        wisbns = 1
-        chabns = 0
+    # if request.form['race'] == 'Dwarf':
+    #     strbns = 0
+    #     dexbns = 0
+    #     conbns = 2
+    #     intbns = 0
+    #     wisbns = 1
+    #     chabns = 0
 
-    if request.form['race'] == 'Elf':
-        strbns = 0
-        dexbns = 2
-        conbns = 0
-        intbns = 1
-        wisbns = 1
-        chabns = 0
+    # if request.form['race'] == 'Elf':
+    #     strbns = 0
+    #     dexbns = 2
+    #     conbns = 0
+    #     intbns = 1
+    #     wisbns = 1
+    #     chabns = 0
 
-    if request.form['race'] == 'Halfling':
-        strbns = 0
-        dexbns = 2
-        conbns = 0
-        intbns = 0
-        wisbns = 0
-        chabns = 0
+    # if request.form['race'] == 'Halfling':
+    #     strbns = 0
+    #     dexbns = 2
+    #     conbns = 0
+    #     intbns = 0
+    #     wisbns = 0
+    #     chabns = 0
 
-    if request.form['race'] == 'Human':
-        strbns = 1
-        dexbns = 1
-        conbns = 1
-        intbns = 1
-        wisbns = 1
-        chabns = 1
+    # if request.form['race'] == 'Human':
+    #     strbns = 1
+    #     dexbns = 1
+    #     conbns = 1
+    #     intbns = 1
+    #     wisbns = 1
+    #     chabns = 1
 
-    if request.form['race'] == 'Dragonborn':
-        strbns = 2
-        dexbns = 0
-        conbns = 0
-        intbns = 0
-        wisbns = 0
-        chabns = 1
+    # if request.form['race'] == 'Dragonborn':
+    #     strbns = 2
+    #     dexbns = 0
+    #     conbns = 0
+    #     intbns = 0
+    #     wisbns = 0
+    #     chabns = 1
 
-    if request.form['race'] == 'Gnome':
-        strbns = 0
-        dexbns = 0
-        conbns = 0
-        intbns = 2
-        wisbns = 0
-        chabns = 0
+    # if request.form['race'] == 'Gnome':
+    #     strbns = 0
+    #     dexbns = 0
+    #     conbns = 0
+    #     intbns = 2
+    #     wisbns = 0
+    #     chabns = 0
 
-    if request.form['race'] == 'Half-Elf':
-        strbns = 0
-        dexbns = 0
-        conbns = 0
-        intbns = 1
-        wisbns = 0
-        chabns = 2
+    # if request.form['race'] == 'Half-Elf':
+    #     strbns = 0
+    #     dexbns = 0
+    #     conbns = 0
+    #     intbns = 1
+    #     wisbns = 0
+    #     chabns = 2
 
-    if request.form['race'] == 'Half-Orc':
-        strbns = 2
-        dexbns = 0
-        conbns = 1
-        intbns = 0
-        wisbns = 0
-        chabns = 0
+    # if request.form['race'] == 'Half-Orc':
+    #     strbns = 2
+    #     dexbns = 0
+    #     conbns = 1
+    #     intbns = 0
+    #     wisbns = 0
+    #     chabns = 0
 
-    if request.form['race'] == 'Tiefling':
-        strbns = 0
-        dexbns = 0
-        conbns = 0
-        intbns = 1
-        wisbns = 0
-        chabns = 2
+    # if request.form['race'] == 'Tiefling':
+    #     strbns = 0
+    #     dexbns = 0
+    #     conbns = 0
+    #     intbns = 1
+    #     wisbns = 0
+    #     chabns = 2
 
 #SET CLASS ABILITY MODIFIERS <-- NEXT <-- NEXT
 
 #ABILITY SCORES MODIFIERS
-    strength = request.form['strength'] + strbns
-    dexterity = request.form['dexterity'] + dexbns
-    constitution = request.form['constitution'] + conbns
-    intelligence = request.form['intelligence'] + intbns
-    wisdom = request.form['wisdom'] + wisbns
-    charisma = request.form['charisma'] + chabns
+    strength = request.form['strength']# + strbns
+    dexterity = request.form['dexterity']# + dexbns
+    constitution = request.form['constitution']# + conbns
+    intelligence = request.form['intelligence']# + intbns
+    wisdom = request.form['wisdom']# + wisbns
+    charisma = request.form['charisma']# + chabns
 
 #SUBMITS CHARACTER STATS TO DB
     owner = User.query.filter_by(email=session['email']).first()
+
     if request.method == 'POST':
         newChar = Character(name, race, charclass, level, background, alignment, exp, hp, proficiency, strength, dexterity, constitution, intelligence, wisdom, charisma, owner)
         db.session.add(newChar)
         db.session.commit()
         thisChar = str(newChar.id)
-        return redirect('./characterSheet?id='+thisChar)
+        return redirect('/characterSheet?id='+thisChar)
 
 #PRODUCES CHARACTER SHEET PAGE - PAGE NEEDS ALL INFORMATION AND FORMATTING IN HTML
 @app.route('/characterSheet', methods=['POST', 'GET'])
