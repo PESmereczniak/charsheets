@@ -102,7 +102,12 @@
             {% endfor %}
           </select></li>
         </ol>
-        <input type="submit" value="Create">
+        {% if charClass == Barbarian %}
+          <p>This is a test</p>
+          {% else %}
+          <p>Please Select Class</p>
+        {% endif %}
+        <input type="submit" value="Next">
       </form>
     </body>
 {% endblock %}

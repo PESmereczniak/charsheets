@@ -28,7 +28,7 @@
   <p name = 'background'>Background: {{thisCharacter.background}}</p>
   <p name = 'alignment'>Alignment: {{thisCharacter.alignment}}</p>
   <p name = 'exp'>Experience Points: {{thisCharacter.exp}}</p>
-  <p name = 'hp'>Max HP: {{thisCharacter.hp}}</p>
+  <p name = 'hp'>Max HP: {{hp}}</p>
 
   <p name = 'proficiency'>Proficiency Bonus: {{thisCharacter.proficiency}}</p>
   <p>Armor Class: {{ac}}</p>
@@ -54,32 +54,34 @@
   <p>Charisma: {{chamod}}</p>
 
   <h3>Skills</h3>
-  <p>Acrobatics: {{dexmod}}</p>
-  <p>Animal Handling: {{wismod}}</p>
-  <p>Arcana: {{intmod}}</p>
-  <p>Athletics: {{strmod}}</p>
-  <p>Deception: {{chamod}}</p>
-  <p>History: {{intmod}}</p>
-  <p>Insight: {{wismod}}</p>
-  <p>Intimidation: {{chamod}}</p>
-  <p>Investigation: {{intmod}}</p>
-  <p>Medicine: {{wismod}}</p>
-  <p>Nature: {{intmod}}</p>
-  <p>Perception: {{wismod}}</p>
-  <p>Performance: {{chamod}}</p>
-  <p>Persuasion: {{chamod}}</p>
-  <p>Religion: {{intmod}}</p>
-  <p>Slight of Hand: {{dexmod}}</p>
-  <p>Stealth: {{dexmod}}</p>
-  <p>Survival: {{wismod}}</p>
+  <p>Acrobatics: {{dexmod + acrpro}}</p>
+  <p>Animal Handling: {{wismod + anipro}}</p>
+  <p>Arcana: {{intmod + arcpro}}</p>
+  <p>Athletics: {{strmod + athpro}}</p>
+  <p>Deception: {{chamod + decpro}}</p>
+  <p>History: {{intmod + hispro}}</p>
+  <p>Insight: {{wismod + inspro}}</p>
+  <p>Intimidation: {{chamod + intpro}}</p>
+  <p>Investigation: {{intmod + invpro}}</p>
+  <p>Medicine: {{wismod + medpro}}</p>
+  <p>Nature: {{intmod + natpro}}</p>
+  <p>Perception: {{wismod + perpro}}</p>
+  <p>Performance: {{chamod + prfpro}}</p>
+  <p>Persuasion: {{chamod + prspro}}</p>
+  <p>Religion: {{intmod + relpro}}</p>
+  <p>Slight of Hand: {{dexmod + slgpro}}</p>
+  <p>Stealth: {{dexmod + stepro}}</p>
+  <p>Survival: {{wismod + surpro}}</p>
 
   <p name = 'meleeAttackMod'>Melee Attack Modifier: XX</p>
   <p name = 'rangedAttackMod'>Ranged Attack Modifier: XX</p>
   <p name = 'spellAttackMod'>Spell Attack Modifier: XX</p>
-  <p name = 'savedc'>Save DC: XX</p>
-  <p name = 'ac'>Armor Class: XX</p>
+  <p name = 'savedc'>Save DC: {{savedc}}</p>
+  <p name = 'strmansavedc'>FIGHTER Maneuver Save DC (Strength): {{strmansavedc}}</p>
+  <p name = 'dexmansavedc'>FIGHTER Maneuver Save DC (Dexterity): {{dexmansavedc}}</p>
 
-  <p name = 'money'>Money: XX</p>
+
+    <p name = 'money'>Money: XX</p>
   <p name = 'inventory'>Inventory: XX</p>
   <input type="submit" value="End of Episode">
   </form>

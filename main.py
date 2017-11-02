@@ -57,7 +57,6 @@ class Character(db.Model):
         self.charisma = charisma
         self.owner = owner
 
-
 #class Item(db.Model):
 #    id = db.Column(db.Integer, primary_key=True)
 #    character = db.relationship('Character')
@@ -152,7 +151,7 @@ def createNew():
     level = int(request.form['level'])
     background = request.form['background']
     alignment = request.form['alignment']
-    hp = 0
+
 #SET STARTING EXPERIENCE POINTS, BASED ON STARTING LEVEL
     if level == 1:
         exp = 0
@@ -208,30 +207,21 @@ def createNew():
         proficiency = 6
 
 #SET RACIAL ABILITY SCORE MODIFIERS <--FUNCTIONING; WILL NEED SPECIFICS FOR PARTICULAR SUBRACES (IE HILL DWARF AND HIGH ELF)
+    strbns = 0
+    dexbns = 0
+    conbns = 0
+    intbns = 0
+    wisbns = 0
+    chabns = 0
     if race == 'Dwarf':
-        strbns = 4
-        dexbns = 0
         conbns = 2
-        intbns = 0
         wisbns = 1
-        chabns = 0
-
     if race == 'Elf':
-        strbns = 0
         dexbns = 2
-        conbns = 0
         intbns = 1
         wisbns = 1
-        chabns = 0
-
     if race == 'Halfling':
-        strbns = 0
         dexbns = 2
-        conbns = 0
-        intbns = 0
-        wisbns = 0
-        chabns = 0
-
     if race == 'Human':
         strbns = 1
         dexbns = 1
@@ -239,48 +229,20 @@ def createNew():
         intbns = 1
         wisbns = 1
         chabns = 1
-
     if race == 'Dragonborn':
         strbns = 2
-        dexbns = 0
-        conbns = 0
-        intbns = 0
-        wisbns = 0
         chabns = 1
-
     if race == 'Gnome':
-        strbns = 0
-        dexbns = 0
-        conbns = 0
         intbns = 2
-        wisbns = 0
-        chabns = 0
-
     if race == 'Half-Elf':
-        strbns = 0
-        dexbns = 0
-        conbns = 0
         intbns = 1
-        wisbns = 0
         chabns = 2
-
     if race == 'Half-Orc':
         strbns = 2
-        dexbns = 0
         conbns = 1
-        intbns = 0
-        wisbns = 0
-        chabns = 0
-
     if race == 'Tiefling':
-        strbns = 0
-        dexbns = 0
-        conbns = 0
         intbns = 1
-        wisbns = 0
         chabns = 2
-
-#SET CLASS ABILITY MODIFIERS <-- NEXT <-- NEXT
 
 #ABILITY SCORES WITH MODIFIERS
     strength = int(request.form['strength'])
@@ -296,9 +258,11 @@ def createNew():
     charisma = int(request.form['charisma'])
     charisma = charisma + chabns
 
+#SET HP TO 0; forces int
+    hp = 0
+
 #SUBMITS CHARACTER STATS TO DB
     owner = User.query.filter_by(email=session['email']).first()
-
     if request.method == 'POST':
         newChar = Character(name, race, charclass, level, background, alignment, exp, hp, proficiency, strength, dexterity, constitution, intelligence, wisdom, charisma, owner)
         db.session.add(newChar)
@@ -343,17 +307,113 @@ def charSheet():
     else:
         chamod = int((int(thisCharacter.charisma-11))/2)
 
-#SAVE DC CALCULATION
+#SAVE DC CALCULATION <-- Works, but FIGHTER CLASS could use work either on this end or in HTML
     savedc = 0
+    strmansavedc = "N/A" #FOR FIGHTERS ONLY
+    dexmansavedc = "N/A" #FOR FIGHTERS ONLY
+    if thisCharacter.charclass == "Bard" or thisCharacter.charclass == "Paladin" or thisCharacter.charclass == "Warlock" or thisCharacter.charclass == "Sorcerer":
+        savedc = 8 + thisCharacter.proficiency + chamod
+    if thisCharacter.charclass == "Cleric" or thisCharacter.charclass == "Druid" or thisCharacter.charclass == "Ranger":
+        savedc = 8 + thisCharacter.proficiency + wismod
+    if thisCharacter.charclass == "Fighter" or thisCharacter.charclass == "Rogue" or thisCharacter == "Wizard":
+        savedc = 8 + thisCharacter.proficiency + intmod
+    if thisCharacter.charclass == "Fighter":
+        strmansavedc = 8 + thisCharacter.proficiency + strmod
+        dexmansavedc = 8 + thisCharacter.proficiency + dexmod
 
-#AC CALCULATION
-    ac = 10 + dexmod
+#AC CALCULATION <-- INCOMPLETE, BUT WORKING
+    armor = 0
+    shield = 0
 
-#ATTACK BONUS CALCULATIONS FOR PRIMARY ATTACK METHOD
+    if armor > 0:
+        ac = dexmod + armor + shield
+    elif thisCharacter.charclass == "Barbarian":# and thisCharacter.armor = 0: <Need to create an armor handler
+        ac = 10 + dexmod + conmod + shield
+    else:
+        ac = 10 + dexmod + shield
+
+#ATTACK BONUS CALCULATIONS FOR PRIMARY ATTACK METHOD <-- INCOMPLETE
     meleeAttackMod = 0
     rangedAttackMod = 0
     spellAttackMod = 0
-    return render_template('character.html', title=thisCharacter.name, thisCharacter=thisCharacter, strmod=strmod, dexmod=dexmod, conmod=conmod, intmod=intmod, wismod=wismod, chamod=chamod, ac=ac)#, savedc=savedc, ac=ac, meleeAttackMod=meleeAttackMod, rangedAttackMod=rangedAttackMod, spellAttackMod=spellAttackMod)
+
+#CHARACTER BACKGROUND PROFICIENCY BONUS
+#All Skills proficiencies initialized at 0
+    charPro = int(thisCharacter.proficiency)
+
+    acrpro = 0
+    anipro = 0
+    arcpro = 0
+    athpro = 0
+    decpro = 0
+    hispro = 0
+    inspro = 0
+    intpro = 0
+    invpro = 0
+    medpro = 0
+    natpro = 0
+    perpro = 0
+    prfpro = 0
+    prspro = 0
+    relpro = 0
+    slgpro = 0
+    stepro = 0
+    surpro = 0
+#Modifies 
+    if thisCharacter.background == "acolyte":
+        inspro = charPro
+        relpro = charPro
+    if thisCharacter.background == "charlatan":
+        decpro = charPro
+        slgpro = charPro
+    if thisCharacter.background == "criminal":
+        decpro = charPro
+        stepro = charPro
+    if thisCharacter.background == "entertainer":
+        acrpro = charPro
+        prfpro = charPro
+    if thisCharacter.background == "folkhero":
+        anipro = charPro
+        surpro = charPro
+    if thisCharacter.background == "guildartisan":
+        inspro = charPro
+        prspro = charPro
+    if thisCharacter.background == "hermit":
+        medpro = charPro
+        relpro = charPro
+    if thisCharacter.background == "noble":
+        hispro = charPro
+        prspro = charPro
+    if thisCharacter.background == "outlander":
+        athpro = charPro
+        surpro = charPro
+    if thisCharacter.background == "sage":
+        arcpro = charPro
+        hispro = charPro
+    if thisCharacter.background == "sailor":
+        athpro = charPro
+        perpro = charPro
+    if thisCharacter.background == "soldier":
+        athpro = charPro
+        intpro = charPro
+    if thisCharacter.background == "urchin":
+        slgpro = charPro
+        stepro = charPro
+
+#SETS HP BASED ON LEVEL (USES AVERAGE PROVIDED IN PH FOR EACH CLASS)
+    hp = 0
+    if thisCharacter.charclass == "Barbarian":
+        hp = 12 + conmod + (7*(thisCharacter.level-1))
+    if thisCharacter.charclass == "Bard" or thisCharacter.charclass == "Cleric" or thisCharacter.charclass == "Druid" or thisCharacter.charclass == "Monk" or thisCharacter.charclass == "Rogue" or thisCharacter.charclass == "Warlock":
+        hp = 8 + conmod + (5*(thisCharacter.level-1))
+    if thisCharacter.charclass == "Fighter" or thisCharacter.charclass == "Paladin" or thisCharacter.charclass == "Ranger":
+        hp = 10 + conmod + (6*(thisCharacter.level-1))
+    if thisCharacter.charclass == "Sorcerer" or thisCharacter.charclass == "Wizard":
+        hp = 6 + conmod + (4*(thisCharacter.level-1))
+
+
+#RETURN STATEMENT
+    return render_template('character.html', title=thisCharacter.name, thisCharacter=thisCharacter, strmod=strmod, dexmod=dexmod, conmod=conmod, intmod=intmod, wismod=wismod, chamod=chamod, ac=ac, charPro=charPro, acrpro=acrpro, anipro=anipro, arcpro=arcpro, athpro=athpro, decpro=decpro, hispro=hispro, inspro=inspro, intpro=intpro, invpro=invpro, medpro=medpro, natpro=natpro, perpro=perpro, prfpro=prfpro, prspro=prspro, relpro=relpro, slgpro=slgpro, stepro=stepro, surpro=surpro, savedc=savedc, strmansavedc=strmansavedc, dexmansavedc=dexmansavedc, hp=hp)#meleeAttackMod=meleeAttackMod, rangedAttackMod=rangedAttackMod, spellAttackMod=spellAttackMod)
 
 #RENDERS PAGE OF CHARACTERS CREATED BY CURRENT USER
 @app.route('/userCharacters', methods=['POST', 'GET'])
