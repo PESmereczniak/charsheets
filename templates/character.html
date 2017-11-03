@@ -19,11 +19,23 @@
         {% endfor %}
         </ul>
     {% endwith %}    -->
-<form action = "/updateCharacter" method="POST">
+<form action = "/updateXP" method="POST">
   <input type="text" name="charID" value={{thisCharacter.id}} hidden>
-  <h4>XP Earned this Episode:</h4><input type="text" name="additionalXP" id="21"><br>
-  <input type="submit" value="Update Character">
+  <h4>Current XP: {{thisCharacter.exp}}<br>XP Earned this Episode:<input type="number" name="additionalXP" id="21"></h4><br>
+  <input type="submit" value="Add XP">
 </form>
+<form action="/calcMoney" method="POST">  <input type="text" name="charID" value={{thisCharacter.id}} hidden>
+  <h4>Current Money: {{thisCharacter.charPlatinum}} Platinum, {{thisCharacter.charGold}} Gold, {{thisCharacter.charSilver}} Silver, {{thisCharacter.charCopper}} Copper</h4>
+  <h4>Spend Platinum: <input type="number" name="subPlat" value=0>
+    Spend Gold: <input type="number" name="subGold" value=0>
+    Spend Silver: <input type="number" name="subSilv" value=0>
+    Spend Copper: <input type="number" name="subCopp" value=0>
+    <br>Add Platinum: <input type="number" name="addPlat" value=0>
+    Add Gold: <input type="number" name="addGold" value=0>
+    Add Silver: <input type="number" name="addSilv" value=0>
+    Add Copper: <input type="number" name="addCopp" value=0></h4>
+  <input type="submit" value="Calculate">
+  </form>
 
 <div name = 'Character.name'>
   <h4><p name = 'name'>Name: {{thisCharacter.name}}</p>

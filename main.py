@@ -34,13 +34,18 @@ class Character(db.Model):
     intelligence = db.Column(db.Integer)
     wisdom = db.Column(db.Integer)
     charisma = db.Column(db.Integer)
+    #MONEY
+    charCopper = db.Column(db.Integer)
+    charSilver = db.Column(db.Integer)
+    charGold = db.Column(db.Integer)
+    charPlatinum = db.Column(db.Integer)
 
     #MUST DEFINE RELATIONSHIPS WITH OTHER TABLES
     owner_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     user = db.relationship('User')
 #    items = db.relationship('Item')
 
-    def __init__(self, name, race, charclass, level, background, alignment, exp, hp, proficiency, strength, dexterity, constitution, intelligence, wisdom, charisma, owner):
+    def __init__(self, name, race, charclass, level, background, alignment, exp, hp, proficiency, strength, dexterity, constitution, intelligence, wisdom, charisma, charCopper, charSilver, charGold, charPlatinum, owner):
         self.name = name
         self.race = race
         self.charclass = charclass
@@ -56,6 +61,10 @@ class Character(db.Model):
         self.intelligence = intelligence
         self.wisdom = wisdom
         self.charisma = charisma
+        self.charCopper = charCopper
+        self.charSilver = charSilver
+        self.charGold = charGold
+        self.charPlatinum = charPlatinum
         self.owner = owner
 
 #class Item(db.Model):
@@ -262,10 +271,15 @@ def createNew():
 #SET HP TO 0; forces int
     hp = 0
 
-#SUBMITS CHARACTER STATS TO DB
+#SETS CHARACTERS MONEY (CURRENTLY STATIC, BUT WILL BE MADE TO FIT DIFFERENT CLASSES)
+    charCopper = 0
+    charSilver = 0
+    charGold = 15
+    charPlatinum = 0
+# #SUBMITS CHARACTER STATS TO DB
     owner = User.query.filter_by(email=session['email']).first()
     if request.method == 'POST':
-        newChar = Character(name, race, charclass, level, background, alignment, exp, hp, proficiency, strength, dexterity, constitution, intelligence, wisdom, charisma, owner)
+        newChar = Character(name, race, charclass, level, background, alignment, exp, hp, proficiency, strength, dexterity, constitution, intelligence, wisdom, charisma, charCopper, charSilver, charGold, charPlatinum, owner)
         db.session.add(newChar)
         db.session.commit()
         thisChar = str(newChar.id)
@@ -416,17 +430,83 @@ def charSheet():
     return render_template('character.html', title=thisCharacter.name, thisCharacter=thisCharacter, strmod=strmod, dexmod=dexmod, conmod=conmod, intmod=intmod, wismod=wismod, chamod=chamod, ac=ac, charPro=charPro, acrpro=acrpro, anipro=anipro, arcpro=arcpro, athpro=athpro, decpro=decpro, hispro=hispro, inspro=inspro, intpro=intpro, invpro=invpro, medpro=medpro, natpro=natpro, perpro=perpro, prfpro=prfpro, prspro=prspro, relpro=relpro, slgpro=slgpro, stepro=stepro, surpro=surpro, savedc=savedc, strmansavedc=strmansavedc, dexmansavedc=dexmansavedc, hp=hp)#meleeAttackMod=meleeAttackMod, rangedAttackMod=rangedAttackMod, spellAttackMod=spellAttackMod)
 
 #UPDATE CHARACTER FROM CHARACTERSHEET SCREEN <--NEW SECTION (SUCCESSFULLY RETRIEVS ID, XP, AND UPDATES XP; NEEDS TO UPDATE LEVEL, WHEN APPROPRIATE)
-@app.route('/updateCharacter', methods=['POST', 'GET'])
-def updateCharacter():
+@app.route('/updateXP', methods=['POST', 'GET'])
+def updateXP():
     #Identify Character with Character ID
     CID = request.form["charID"]
     thisCharacter = Character.query.get(CID)
     #Get Current XP from TABLE
     currentXP = thisCharacter.exp
-    plusXP = int(request.form['additionalXP'])
+    plusXP = int(request.form['additionalXP']) #CRASHES IF THIS IS BLANK
 #    return 'The value of plusXP: ' + str(plusXP)
     if request.method == 'POST':
         thisCharacter.exp = currentXP + plusXP
+        db.session.commit()
+        return redirect('/characterSheet?id='+CID)
+
+#CALCULATES CHARACTER'S MONEY, BOTH SPENDING AND EARNING
+@app.route('/calcMoney', methods=['POST', 'GET'])
+def calcMoney():
+    CID = request.form["charID"]
+    thisCharacter = Character.query.get(CID)
+
+#GET +/- MONEY FROM FORM (WORKS; NEEDS REFINMENT)
+    # monies = ['addPlat', 'addGold', 'addSilv', 'addCopp', 'subPlatt', 'subGold', 'subSilv', 'subCopp']
+    # for i in monies:
+    #     i = int(request.form["i"])
+    addPlat = int(request.form['addPlat'])
+    addGold = int(request.form['addGold'])
+    addSilv = int(request.form['addSilv'])
+    addCopp = int(request.form['addCopp'])
+    subPlat = int(request.form['subPlat'])
+    subGold = int(request.form['subGold'])
+    subSilv = int(request.form['subSilv'])
+    subCopp = int(request.form['subCopp'])
+
+#GET CHARACTERS CURRENT MONEY AMMOUNT
+    currentplat = thisCharacter.charPlatinum
+    currentgold = thisCharacter.charGold
+    currentsilv = thisCharacter.charSilver
+    currentcopp = thisCharacter.charCopper
+
+#SETS ROUND UP VARIABLE TO 0
+    uppSilv = 0
+    uppGold = 0
+    uppPlat = 0
+#CHANGE CHARACTERS CURRENT MONEY AMMOUNT (NEED TO MAKE CHANGES FOR values greater than one conversion)
+    newCopp = currentcopp + addCopp - subCopp
+
+    if newCopp > 99 or currentcopp > 99:
+        newCopp = newCopp - 100
+        uppSilv = 1
+    if newCopp <= 0 or currentcopp <=0:
+        newCopp = newCopp + 100
+        uppSilv = -1
+    newSilv = currentsilv + uppSilv + addSilv - subSilv
+
+    if newSilv > 99 or currentsilv > 99:
+        newSilv = newSilv - 100
+        uppGold = 1
+    if newSilv <=0 or currentsilv <= 0:
+        newSilv = newSilv +100
+        uppGold = -1
+    newGold = currentgold + uppGold + addGold - subGold
+
+    if newGold > 49 or currentgold > 49:
+        newGold = newGold - 50
+        uppPlat = 1
+    if newGold <= 0 or currentgold <=0:
+        newGold = newGold + 50
+        uppPlat = -1
+    newPlat = currentplat + uppPlat + addPlat - subPlat
+
+#UPDATES CHARACTER MONEY
+    if request.method == 'POST':
+#MONEY UPDATER FUNCTIONS HERE
+        thisCharacter.charPlatinum = newPlat
+        thisCharacter.charGold = newGold
+        thisCharacter.charSilver = newSilv
+        thisCharacter.charCopper = newCopp
         db.session.commit()
         return redirect('/characterSheet?id='+CID)
 
