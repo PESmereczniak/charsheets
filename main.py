@@ -1,5 +1,6 @@
 from flask import Flask, request, redirect, render_template, session, flash
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import update
 from datetime import datetime
 #pylint: disable=no-member
 
@@ -142,7 +143,7 @@ def index():
 def createForm():
     return render_template('create.html', title="Create New Character")
 
-#CREATES NEW USER UPON SUBMISSION - NEEDS MORE INFORMATION TO FULLY CREATE CHARACTER, BUT CURRENTLY IS FUNCTIONING
+#CREATES NEW CHARACTER UPON SUBMISSION - NEEDS MORE INFORMATION TO FULLY CREATE CHARACTER, BUT CURRENTLY IS FUNCTIONING
 @app.route('/newCharacter', methods=['POST', 'GET'])
 def createNew():
     name = request.form['charName']
@@ -332,7 +333,7 @@ def charSheet():
     else:
         ac = 10 + dexmod + shield
 
-#ATTACK BONUS CALCULATIONS FOR PRIMARY ATTACK METHOD <-- INCOMPLETE
+#ATTACK BONUS CALCULATIONS FOR PRIMARY ATTACK METHOD <-- DO THIS ONE
     meleeAttackMod = 0
     rangedAttackMod = 0
     spellAttackMod = 0
@@ -360,43 +361,43 @@ def charSheet():
     stepro = 0
     surpro = 0
 #Modifies 
-    if thisCharacter.background == "acolyte":
+    if thisCharacter.background == "Acolyte":
         inspro = charPro
         relpro = charPro
-    if thisCharacter.background == "charlatan":
+    if thisCharacter.background == "Charlatan":
         decpro = charPro
         slgpro = charPro
-    if thisCharacter.background == "criminal":
+    if thisCharacter.background == "Criminal":
         decpro = charPro
         stepro = charPro
-    if thisCharacter.background == "entertainer":
+    if thisCharacter.background == "Entertainer":
         acrpro = charPro
         prfpro = charPro
-    if thisCharacter.background == "folkhero":
+    if thisCharacter.background == "Folk Hero":
         anipro = charPro
         surpro = charPro
-    if thisCharacter.background == "guildartisan":
+    if thisCharacter.background == "Guildartisan":
         inspro = charPro
         prspro = charPro
-    if thisCharacter.background == "hermit":
+    if thisCharacter.background == "Hermit":
         medpro = charPro
         relpro = charPro
-    if thisCharacter.background == "noble":
+    if thisCharacter.background == "Noble":
         hispro = charPro
         prspro = charPro
-    if thisCharacter.background == "outlander":
+    if thisCharacter.background == "Out Lander":
         athpro = charPro
         surpro = charPro
-    if thisCharacter.background == "sage":
+    if thisCharacter.background == "Sage":
         arcpro = charPro
         hispro = charPro
-    if thisCharacter.background == "sailor":
+    if thisCharacter.background == "Sailor":
         athpro = charPro
         perpro = charPro
-    if thisCharacter.background == "soldier":
+    if thisCharacter.background == "Soldier":
         athpro = charPro
         intpro = charPro
-    if thisCharacter.background == "urchin":
+    if thisCharacter.background == "Urchin":
         slgpro = charPro
         stepro = charPro
 
@@ -411,9 +412,23 @@ def charSheet():
     if thisCharacter.charclass == "Sorcerer" or thisCharacter.charclass == "Wizard":
         hp = 6 + conmod + (4*(thisCharacter.level-1))
 
-
 #RETURN STATEMENT
     return render_template('character.html', title=thisCharacter.name, thisCharacter=thisCharacter, strmod=strmod, dexmod=dexmod, conmod=conmod, intmod=intmod, wismod=wismod, chamod=chamod, ac=ac, charPro=charPro, acrpro=acrpro, anipro=anipro, arcpro=arcpro, athpro=athpro, decpro=decpro, hispro=hispro, inspro=inspro, intpro=intpro, invpro=invpro, medpro=medpro, natpro=natpro, perpro=perpro, prfpro=prfpro, prspro=prspro, relpro=relpro, slgpro=slgpro, stepro=stepro, surpro=surpro, savedc=savedc, strmansavedc=strmansavedc, dexmansavedc=dexmansavedc, hp=hp)#meleeAttackMod=meleeAttackMod, rangedAttackMod=rangedAttackMod, spellAttackMod=spellAttackMod)
+
+#UPDATE CHARACTER FROM CHARACTERSHEET SCREEN <--NEW SECTION (SUCCESSFULLY RETRIEVS ID, XP, AND UPDATES XP; NEEDS TO UPDATE LEVEL, WHEN APPROPRIATE)
+@app.route('/updateCharacter', methods=['POST', 'GET'])
+def updateCharacter():
+    #Identify Character with Character ID
+    CID = request.form["charID"]
+    thisCharacter = Character.query.get(CID)
+    #Get Current XP from TABLE
+    currentXP = thisCharacter.exp
+    plusXP = int(request.form['additionalXP'])
+#    return 'The value of plusXP: ' + str(plusXP)
+    if request.method == 'POST':
+        thisCharacter.exp = currentXP + plusXP
+        db.session.commit()
+        return redirect('/characterSheet?id='+CID)
 
 #RENDERS PAGE OF CHARACTERS CREATED BY CURRENT USER
 @app.route('/userCharacters', methods=['POST', 'GET'])

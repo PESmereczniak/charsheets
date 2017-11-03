@@ -19,15 +19,20 @@
         {% endfor %}
         </ul>
     {% endwith %}    -->
+<form action = "/updateCharacter" method="POST">
+  <input type="text" name="charID" value={{thisCharacter.id}} hidden>
+  <h4>XP Earned this Episode:</h4><input type="text" name="additionalXP" id="21"><br>
+  <input type="submit" value="Update Character">
+</form>
 
-<form action = '/updateCharacter' name = 'Character.name'>
+<div name = 'Character.name'>
   <h4><p name = 'name'>Name: {{thisCharacter.name}}</p>
   <p name = 'race'>Race: {{thisCharacter.race}}</p>
   <p name = 'charclass'>Class: {{thisCharacter.charclass}}</p>
   <p name = 'level'>Level: {{thisCharacter.level}}</p>
   <p name = 'background'>Background: {{thisCharacter.background}}</p>
   <p name = 'alignment'>Alignment: {{thisCharacter.alignment}}</p>
-  <p name = 'exp'>Experience Points: {{thisCharacter.exp}}</p>
+  <p name = "exp" value={{thisCharacter.exp}}>Experience Points: {{thisCharacter.exp}}</p>
   <p name = 'hp'>Max HP: {{hp}}</p>
 
   <p name = 'proficiency'>Proficiency Bonus: {{thisCharacter.proficiency}}</p>
@@ -83,8 +88,7 @@
 
     <p name = 'money'>Money: XX</p>
   <p name = 'inventory'>Inventory: XX</p>
-  <input type="submit" value="End of Episode">
-  </form>
+</div>
 </body>
 </html>
 {% endblock %}
