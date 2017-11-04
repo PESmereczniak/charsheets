@@ -268,9 +268,22 @@ def createNew():
     charisma = int(request.form['charisma'])
     charisma = charisma + chabns
 
-#SET HP TO 0; forces int
+#SET HP
+    #Need TOTAL Constitution Mod for start HP
+    if int(constitution + conbns)%2==0:
+        conmod = int((int((constitution + conbns)-10))/2)
+    else:
+        conmod = int((int((constitution + conbns)-11))/2)
+    #HP Functions
     hp = 0
-
+    if charclass == "Barbarian":
+        hp = 12 + conmod + (7*(level-1))
+    if charclass == "Bard" or charclass == "Cleric" or charclass == "Druid" or charclass == "Monk" or charclass == "Rogue" or charclass == "Warlock":
+        hp = 8 + conmod + (5*(level-1))
+    if charclass == "Fighter" or charclass == "Paladin" or charclass == "Ranger":
+        hp = 10 + conmod + (6*(level-1))
+    if charclass == "Sorcerer" or charclass == "Wizard":
+        hp = 6 + conmod + (4*(level-1))
 #SETS CHARACTERS MONEY (CURRENTLY STATIC, BUT WILL BE MADE TO FIT DIFFERENT CLASSES)
     charCopper = 0
     charSilver = 0
@@ -438,9 +451,73 @@ def updateXP():
     #Get Current XP from TABLE
     currentXP = thisCharacter.exp
     plusXP = int(request.form['additionalXP']) #CRASHES IF THIS IS BLANK
-#    return 'The value of plusXP: ' + str(plusXP)
+    newXP = currentXP + plusXP
+#GIVES NEW LEVEL AND NEW PROFICIENCY BONSU
+    if newXP <= 299:
+        newLevel = 1
+        newProficiency = 2
+    if newXP > 299 and newXP < 900:
+        newLevel = 2
+        newProficiency = 2
+    if newXP >= 900 and newXP < 2700:
+        newLevel = 3
+        newProficiency = 2
+    if newXP >= 2700 and newXP < 6500:
+        newLevel = 4
+        newProficiency = 2
+    if newXP >= 6500 and newXP < 14000:
+        newLevel = 5
+        newProficiency = 3
+    if newXP >= 14000 and newXP < 23000:
+        newLevel = 6
+        newProficiency = 3
+    if newXP >= 23000 and newXP < 34000:
+        newLevel = 7
+        newProficiency = 3
+    if newXP >= 34000 and newXP < 48000:
+        newLevel = 8
+        newProficiency = 3
+    if newXP >= 48000 and newXP < 64000:
+        newLevel = 9
+        newProficiency = 4
+    if newXP >= 64000 and newXP < 85000:
+        newLevel = 10
+        newProficiency = 4
+    if newXP >= 85000 and newXP < 100000:
+        newLevel = 11
+        newProficiency = 4
+    if newXP >= 100000 and newXP < 120000:
+        newLevel = 12
+        newProficiency = 4
+    if newXP >= 120000 and newXP < 140000:
+        newLevel = 13
+        newProficiency = 5
+    if newXP >= 140000 and newXP < 165000:
+        newLevel = 14
+        newProficiency = 5
+    if newXP >= 165000 and newXP < 195000:
+        newLevel = 15
+        newProficiency = 5
+    if newXP >= 195000 and newXP < 225000:
+        newLevel = 16
+        newProficiency = 5
+    if newXP >= 225000 and newXP < 265000:
+        newLevel = 17
+        newProficiency = 6
+    if newXP >= 265000 and newXP < 305000:
+        newLevel = 18
+        newProficiency = 6
+    if newXP >= 305000 and newXP < 355000:
+        newLevel = 19
+        newProficiency = 6
+    if newXP > 355000:
+        newLevel = 20
+        newProficiency = 6
+
     if request.method == 'POST':
-        thisCharacter.exp = currentXP + plusXP
+        thisCharacter.exp = newXP
+        thisCharacter.level = newLevel
+        thisCharacter.proficiency = newProficiency
         db.session.commit()
         return redirect('/characterSheet?id='+CID)
 
@@ -451,9 +528,6 @@ def calcMoney():
     thisCharacter = Character.query.get(CID)
 
 #GET +/- MONEY FROM FORM (WORKS; NEEDS REFINMENT)
-    # monies = ['addPlat', 'addGold', 'addSilv', 'addCopp', 'subPlatt', 'subGold', 'subSilv', 'subCopp']
-    # for i in monies:
-    #     i = int(request.form["i"])
     addPlat = int(request.form['addPlat'])
     addGold = int(request.form['addGold'])
     addSilv = int(request.form['addSilv'])
@@ -476,7 +550,7 @@ def calcMoney():
 #CHANGE CHARACTERS CURRENT MONEY AMMOUNT (NEED TO MAKE CHANGES FOR values greater than one conversion)
     newCopp = currentcopp + addCopp - subCopp
 
-    if newCopp > 99 or currentcopp > 99:
+    while newCopp > 99 or currentcopp > 99:
         newCopp = newCopp - 100
         uppSilv = 1
     if newCopp <= 0 or currentcopp <=0:
@@ -502,7 +576,6 @@ def calcMoney():
 
 #UPDATES CHARACTER MONEY
     if request.method == 'POST':
-#MONEY UPDATER FUNCTIONS HERE
         thisCharacter.charPlatinum = newPlat
         thisCharacter.charGold = newGold
         thisCharacter.charSilver = newSilv
@@ -510,6 +583,17 @@ def calcMoney():
         db.session.commit()
         return redirect('/characterSheet?id='+CID)
 
+#IN-GAME HP CONTROLS
+# @app.route('/hpMods')
+# def hpMods():
+#     #Identify Character with Character ID
+#     CID = request.form["charID"]
+#     thisCharacter = Character.query.get(CID)
+#     #GET CURRENT HP LEVELS
+#     maxHP = 
+#     hitHP = 
+#     addTmpHP = 
+#     subTmpHP = 
 #RENDERS PAGE OF CHARACTERS CREATED BY CURRENT USER
 @app.route('/userCharacters', methods=['POST', 'GET'])
 def characters():

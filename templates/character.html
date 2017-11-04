@@ -2,7 +2,7 @@
 {% block content %}
 <html>
     <head>
-        <title>{{title}}</title>
+        <title>{{title}} Level: {{thisCharacter.level}} {{thisCharacter.charclass}}</title>
         <style>
             .error {
                 color: red;
@@ -19,35 +19,83 @@
         {% endfor %}
         </ul>
     {% endwith %}    -->
-<form action = "/updateXP" method="POST">
-  <input type="text" name="charID" value={{thisCharacter.id}} hidden>
-  <h4>Current XP: {{thisCharacter.exp}}<br>XP Earned this Episode:<input type="number" name="additionalXP" id="21"></h4><br>
+<h2>Level: {{thisCharacter.level}} | {{thisCharacter.race}} | {{thisCharacter.charclass}}</h2>
+<h4>Armor Class: {{ac}}<div name = 'proficiency'>Proficiency: {{thisCharacter.proficiency}}</div></h4>
+<form action = "/hpMods" method="POST"> <input type="text" name="charID" value={{thisCharacter.id}} hidden>
+  <table>
+    <tr>
+      <th><h3>Max HP: {{hp}}</h3></th>
+      <th> </th>
+      <th> </th>
+      <th> </th>
+    </tr>
+    <tr>
+      <th>Hit For: <input type="text" name="subHP"> HP</th>
+      <th>Current Temp HP: XX</th>
+      <th>Current HP: </th>
+    </tr>
+    <tr>
+      <td> </td>
+      <td>Add Temp HP: <input type="text" name="addTempHP"></td>
+      <td> </td>
+    </tr>
+  </table>
+  <input type="submit" value="Update HP">
+</form>
+<form action = "/updateXP" method="POST"> <input type="text" name="charID" value={{thisCharacter.id}} hidden>
+  <table>
+    <tr>
+      <th>Current XP:</th>
+      <th>{{thisCharacter.exp}}</th>
+    </tr>
+    <tr>
+      <td>Additional XP:</td>
+      <td><input type="number" name="additionalXP" id="21"></td>
+    </tr>
+  </table>
   <input type="submit" value="Add XP">
 </form>
-<form action="/calcMoney" method="POST">  <input type="text" name="charID" value={{thisCharacter.id}} hidden>
-  <h4>Current Money: {{thisCharacter.charPlatinum}} Platinum, {{thisCharacter.charGold}} Gold, {{thisCharacter.charSilver}} Silver, {{thisCharacter.charCopper}} Copper</h4>
-  <h4>Spend Platinum: <input type="number" name="subPlat" value=0>
-    Spend Gold: <input type="number" name="subGold" value=0>
-    Spend Silver: <input type="number" name="subSilv" value=0>
-    Spend Copper: <input type="number" name="subCopp" value=0>
-    <br>Add Platinum: <input type="number" name="addPlat" value=0>
-    Add Gold: <input type="number" name="addGold" value=0>
-    Add Silver: <input type="number" name="addSilv" value=0>
-    Add Copper: <input type="number" name="addCopp" value=0></h4>
+<form action="/calcMoney" method="POST"> <input type="text" name="charID" value={{thisCharacter.id}} hidden>
+  <table>
+    <tr>
+      <th> </th>
+      <th>Platinum</th>
+      <th>Gold</th>
+      <th>Silver</th>
+      <th>Copper</th>
+    </tr>
+    <tr>
+      <td><h4>Current</h4></td>
+      <td>{{thisCharacter.charPlatinum}}</td>
+      <td>{{thisCharacter.charGold}}</td>
+      <td>{{thisCharacter.charSilver}}</td>
+      <td>{{thisCharacter.charCopper}}</td>
+    </tr>
+    <tr>
+      <td><h4>Spend</h4></td>
+      <td><input type="number" name="subPlat" value=0></td>
+      <td><input type="number" name="subGold" value=0></td>
+      <td><input type="number" name="subSilv" value=0></td>
+      <td><input type="number" name="subCopp" value=0></td>
+    </tr>
+    <tr>
+      <td><h4>Add</h4></td>
+      <td><input type="number" name="addPlat" value=0></td>
+      <td><input type="number" name="addGold" value=0></td>
+      <td><input type="number" name="addSilv" value=0></td>
+      <td><input type="number" name="addCopp" value=0></h4></td>
+    </tr>
+  </table>
   <input type="submit" value="Calculate">
   </form>
 
 <div name = 'Character.name'>
-  <h4><p name = 'name'>Name: {{thisCharacter.name}}</p>
-  <p name = 'race'>Race: {{thisCharacter.race}}</p>
-  <p name = 'charclass'>Class: {{thisCharacter.charclass}}</p>
-  <p name = 'level'>Level: {{thisCharacter.level}}</p>
+  <h4>
   <p name = 'background'>Background: {{thisCharacter.background}}</p>
   <p name = 'alignment'>Alignment: {{thisCharacter.alignment}}</p>
-  <p name = "exp" value={{thisCharacter.exp}}>Experience Points: {{thisCharacter.exp}}</p>
   <p name = 'hp'>Max HP: {{hp}}</p>
 
-  <p name = 'proficiency'>Proficiency Bonus: {{thisCharacter.proficiency}}</p>
+  </p>
   <p>Armor Class: {{ac}}</p>
   <p name = 'strength'>Strength: {{thisCharacter.strength}}</p>
   <p>Modifier: {{strmod}}</p>
