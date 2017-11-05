@@ -20,41 +20,66 @@
         </ul>
     {% endwith %}    -->
 <h2>Level: {{thisCharacter.level}} | {{thisCharacter.race}} | {{thisCharacter.charclass}}</h2>
+
+<form action="/newGame" method="POST">
+  <input type="text" name="charID" value={{thisCharacter.id}} hidden>
+  <input type="text" name="maxHP" value={{thisCharacter.hp}} hidden>
+  <input type="submit" value="New Game">
+</form>
+
 <h4>Armor Class: {{ac}}<div name = 'proficiency'>Proficiency: {{thisCharacter.proficiency}}</div></h4>
-<form action = "/hpMods" method="POST"> <input type="text" name="charID" value={{thisCharacter.id}} hidden>
+
+<form action = "/hpMods" method="POST">
+<input type="text" name="charID" value={{thisCharacter.id}} hidden>
   <table>
     <tr>
-      <th><h3>Max HP: {{hp}}</h3></th>
+      <th><h3>Max HP: {{thisCharacter.hp}}</h3></th>
       <th> </th>
       <th> </th>
       <th> </th>
     </tr>
     <tr>
-      <th>Hit For: <input type="text" name="subHP"> HP</th>
-      <th>Current Temp HP: XX</th>
-      <th>Current HP: </th>
+      <th>Hit For: <input type="text" name="hitHP" value=0> HP</th>
+      <th>Current Temp HP: {{thisCharacter.tempHP}}</th>
+      <th>Current HP: {{thisCharacter.currentHP}}</th>
     </tr>
     <tr>
       <td> </td>
-      <td>Add Temp HP: <input type="text" name="addTempHP"></td>
-      <td> </td>
+      <td>Add Temp HP: <input type="text" name="addTempHP" value=0></td>
+      <td><input type="submit" value="Update HP"></td>
     </tr>
   </table>
-  <input type="submit" value="Update HP">
+  
 </form>
-<form action = "/updateXP" method="POST"> <input type="text" name="charID" value={{thisCharacter.id}} hidden>
+
+<form action = "/updateXP" method="POST">
+<input type="text" name="charID" value={{thisCharacter.id}} hidden>
   <table>
     <tr>
       <th>Current XP:</th>
       <th>{{thisCharacter.exp}}</th>
     </tr>
     <tr>
-      <td>Additional XP:</td>
+      <td>XP Gained:</td>
       <td><input type="number" name="additionalXP" id="21"></td>
+      <td><input type="submit" value="Add XP"></td>
     </tr>
   </table>
-  <input type="submit" value="Add XP">
 </form>
+
+<form action="/shortRest" method="POST">
+<input type="text" name="charID" value={{thisCharacter.id}} hidden>
+  <table>
+    <tr>
+      <th>Short Rest</th>
+    </tr>
+    <tr>
+      <td>Add HP: <input type="text" name="srHPup" id=""></td>
+      <td><input type="submit" value="Short Rest"></td>
+    </tr>
+  </table>
+</form>
+
 <form action="/calcMoney" method="POST"> <input type="text" name="charID" value={{thisCharacter.id}} hidden>
   <table>
     <tr>

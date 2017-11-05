@@ -25,6 +25,8 @@ class Character(db.Model):
     exp = db.Column(db.Integer)
     #Hit Points
     hp = db.Column(db.Integer)
+    currentHP = db.Column(db.Integer)
+    tempHP = db.Column(db.Integer)
     #Proficiency Bonus
     proficiency = db.Column(db.Integer)
     #Ability Scores
@@ -45,7 +47,7 @@ class Character(db.Model):
     user = db.relationship('User')
 #    items = db.relationship('Item')
 
-    def __init__(self, name, race, charclass, level, background, alignment, exp, hp, proficiency, strength, dexterity, constitution, intelligence, wisdom, charisma, charCopper, charSilver, charGold, charPlatinum, owner):
+    def __init__(self, name, race, charclass, level, background, alignment, exp, hp, currentHP, tempHP, proficiency, strength, dexterity, constitution, intelligence, wisdom, charisma, charCopper, charSilver, charGold, charPlatinum, owner):
         self.name = name
         self.race = race
         self.charclass = charclass
@@ -54,6 +56,8 @@ class Character(db.Model):
         self.alignment = alignment
         self.exp = exp
         self.hp = hp
+        self.currentHP = currentHP
+        self.tempHP = tempHP
         self.proficiency = proficiency
         self.strength = strength
         self.dexterity = dexterity
@@ -584,16 +588,73 @@ def calcMoney():
         return redirect('/characterSheet?id='+CID)
 
 #IN-GAME HP CONTROLS
-# @app.route('/hpMods')
-# def hpMods():
-#     #Identify Character with Character ID
-#     CID = request.form["charID"]
-#     thisCharacter = Character.query.get(CID)
-#     #GET CURRENT HP LEVELS
-#     maxHP = 
-#     hitHP = 
-#     addTmpHP = 
-#     subTmpHP = 
+@app.route('/hpMods', methods=['POST', 'GET'])
+def hpMods():
+    #Identify Character with Character ID
+    CID = request.form["charID"]
+    thisCharacter = Character.query.get(CID)
+
+    #GET CURRENT HP LEVELS
+    currentHP = thisCharacter.currentHP
+    tempHP = int(thisCharacter.tempHP)
+    hitHP = int(request.form['hitHP'])
+    addTempHP = int(request.form['addTempHP'])
+
+    #add Temp HP
+    if addTempHP > 0:
+        tempHP = thisCharacter.tempHP + addTempHP
+    else:
+        tempHP = thisCharacter.tempHP
+
+    #take Damage
+    if tempHP >= hitHP:
+        tempHP = tempHP - hitHP
+    elif tempHP < hitHP:
+        hitHP = hitHP - tempHP
+        tempHP = 0
+        currentHP = currentHP - hitHP
+    else:
+        currentHP = currentHP - hitHP
+
+#UPDATES CHARACTER HP
+    if request.method == 'POST':
+        thisCharacter.tempHP = tempHP
+        thisCharacter.currentHP = currentHP + tempHP
+        db.session.commit()
+        return redirect('/characterSheet?id='+CID)
+
+#SHORT REST (WILL NEED SPECIFICS FOR EACH CLASS, ETC.)
+@app.route('/shortRest', methods=['POST', 'GET'])
+def shortRest():
+    #Identify Character with Character ID
+    CID = request.form["charID"]
+    thisCharacter = Character.query.get(CID)
+    srHPup = int(request.form['srHPup'])
+
+    currentHP = thisCharacter.currentHP + srHPup
+
+    if currentHP >= thisCharacter.hp:
+        currentHP = thisCharacter.hp
+
+    if request.method == 'POST':
+        thisCharacter.tempHP = 0
+        thisCharacter.currentHP = currentHP
+        db.session.commit()
+        return redirect('/characterSheet?id='+CID)
+
+#RESETS CHARACTER HP, SPELL SLOTS, ETC FOR NEW GAME
+@app.route('/newGame', methods=['POST', 'GET'])
+def newGame():
+    #Identify Character with Character ID
+    CID = request.form["charID"]
+    thisCharacter = Character.query.get(CID)
+    #Resets
+    if request.method == 'POST':
+        thisCharacter.currentHP = thisCharacter.hp
+        thisCharacter.tempHP = 0
+        db.session.commit()
+        return redirect('/characterSheet?id='+CID)
+
 #RENDERS PAGE OF CHARACTERS CREATED BY CURRENT USER
 @app.route('/userCharacters', methods=['POST', 'GET'])
 def characters():
